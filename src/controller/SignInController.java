@@ -1,5 +1,6 @@
 package controller;
 
+import connectivity.ConnectionClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,18 +10,24 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Binder;
-import model.User;
-import model.UserInformation;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SignInController {
-    JsonReader jsonReader = new JsonReader("data/RegisteredUsers");
-    JsonWriter jsonWriter = new JsonWriter("data/MainUser");
-    Binder binder;
+    protected static String mainUserUserName;
+    protected static String mainUserPassWord;
+//    JsonReader jsonReader = new JsonReader("data/RegisteredUsers");
+//    JsonWriter jsonWriter = new JsonWriter("data/MainUser");
+//    Binder binder;
+    private ConnectionClass connectionClass;
+    private Connection connection;
+    private PreparedStatement preparedStatement;
 
 
     @FXML
@@ -42,11 +49,11 @@ public class SignInController {
     void initialize() {
         proceedLogin();
         proceedSignUp();
-        try {
-            binder = jsonReader.read();
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
+//        try {
+//            binder = jsonReader.read();
+//        } catch (IOException e) {
+//            System.out.println("Error");
+//        }
     }
 
     private void proceedSignUp() {
@@ -77,14 +84,7 @@ public class SignInController {
             if (!isCorrect || !isValid) {
                 invalid.setText("Check your credentials");
             } else {
-                try {
-                    jsonWriter.open();
-                } catch (FileNotFoundException e) {
-                    System.out.println("IO Exception");
-                }
-                jsonWriter.write(new User(new UserInformation(userName, passWord)));
-                jsonWriter.close();
-                //Take users to main application screen
+                //Take user to main application screen
                 loginSignInButton.getScene().getWindow().hide();
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("../scenes/BinderScene.fxml"));
@@ -98,18 +98,31 @@ public class SignInController {
                 stage.setScene(new Scene(root));
                 stage.show();
             }
-
         });
 
     }
 
     private boolean isCredentialsCorrect(String userName, String passWord) {
-        UserInformation userInformation = new UserInformation(userName, passWord);
-        for (User user : binder) {
-            if (user.getUserInformation().equals(userInformation)) {
-                return true;
+        String query = "SELECT * FROM binder.users";
+        connectionClass = new ConnectionClass();
+        try {
+            connection = connectionClass.getDbConnection();
+            preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery(query);
+            while (resultSet.next()) {
+                String savedUsername = resultSet.getNString("username");
+                String savedPassWord = resultSet.getNString("password");
+                if (savedUsername.equals(userName) && savedPassWord.equals(passWord)) {
+                    mainUserUserName = savedUsername;
+                    mainUserPassWord = savedPassWord;
+                    return true;
+                }
+
             }
+        } catch (SQLException | ClassNotFoundException throwables) {
+            throwables.printStackTrace();
         }
+
         return false;
     }
 

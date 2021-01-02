@@ -1,6 +1,7 @@
 package controller;
 
 
+import connectivity.ConnectionClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,14 +14,18 @@ import model.Binder;
 import model.User;
 import model.UserInformation;
 import persistence.JsonWriter;
-import ui.ConsoleInterface;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class SignUpController {
-    JsonWriter jsonWriter;
+//    JsonWriter jsonWriter;
     Binder binder = new Binder();
+    private ConnectionClass connectionClass;
+    private Connection connection;
+    private PreparedStatement preparedStatement;
     @FXML
     private TextField invalid;
     @FXML
@@ -36,7 +41,7 @@ public class SignUpController {
 
     @FXML
     void initialize() {
-        jsonWriter = new JsonWriter("data/registeredUsers");
+//        jsonWriter = new JsonWriter("data/registeredUsers");
         registerButton.setOnAction(event -> {
             String userName = signUpUsername.getText();
             String passWord = signUpPassword.getText();
@@ -48,13 +53,20 @@ public class SignUpController {
                 binder.addUser(new User(new UserInformation(userName, passWord)));
             }
             if (isValid) {
+                connectionClass = new ConnectionClass();
+                String insert = "INSERT INTO users(username,password)"
+                        + "VALUES(?,?)";
+
                 try {
-                    jsonWriter.open();
-                } catch (FileNotFoundException e) {
-                    System.out.println("Error in opening the file");
+                    connection = connectionClass.getDbConnection();
+                    preparedStatement = connection.prepareStatement(insert);
+                    preparedStatement.setString(1, userName);
+                    preparedStatement.setString(2, passWord);
+                    preparedStatement.executeUpdate();
+                } catch (SQLException | ClassNotFoundException throwables) {
+                    throwables.printStackTrace();
                 }
-                jsonWriter.write(binder);
-                jsonWriter.close();
+                invalid.setText("You have been successfully registered");
             }
         });
         login.setOnAction(event -> {

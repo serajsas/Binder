@@ -27,7 +27,7 @@
             <Font size="15.0" />
         </font>
     </Label>
-   <TextField fx:id="invalid" alignment="BOTTOM_CENTER" layoutX="236.0" layoutY="340.0" prefHeight="25.0" prefWidth="227.0" style="-fx-background-color: #d1e8d1;" />
+   <TextField fx:id="invalid" alignment="CENTER" layoutX="192.0" layoutY="342.0" prefHeight="26.0" prefWidth="316.0" style="-fx-background-color: #d1e8d1;" />
    <Button fx:id="login" layoutX="577.0" layoutY="342.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" style="-fx-background-color: #f08c7a;" text="Login" textFill="#5f1717" />
    <effect>
       <ColorAdjust />
