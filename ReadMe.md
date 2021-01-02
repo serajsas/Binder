@@ -12,10 +12,6 @@ This project is will be responsible for:
 2. Make it **simple** to access different functionalities
 3. Help the user get the best outcome of using this application
 
-### _Audience_
-
-This project's main audience are mature people who are looking for someone to add a value to their lives
-
 ## _User Stories_
 
 - As a user, I want to be able to **view** other people's profile
