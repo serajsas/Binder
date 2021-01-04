@@ -20,3 +20,12 @@ This project is will be responsible for:
 - As a user, I want to be able to **view the list of matches** 
 - As a user, I want to be able to **view the list of people that I passed** 
 - As a user, I want to be able to **view the list of people who liked me**
+
+
+ 
+![Login](https://user-images.githubusercontent.com/64566514/103494282-f307e900-4dea-11eb-88a6-e0d729be5f5f.PNG)
+ ![registration](https://user-images.githubusercontent.com/64566514/103494288-fc915100-4dea-11eb-8830-02b1de704fb0.PNG)
+ ![MainPage](https://user-images.githubusercontent.com/64566514/103494372-690c5000-4deb-11eb-8d16-22d32b4c7110.PNG)
+
+
+
